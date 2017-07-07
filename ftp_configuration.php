@@ -3,6 +3,7 @@
 Plugin Name: CSV Downloader
 Description: Download a CSV file with the catalog of articles from a ftp server.
 Version: 1.0
+Author: pentagonmediasolutions by: Ivan de Menezes,Alirio Angel.
 */
 
 include('DownloadFromFTP.php');
