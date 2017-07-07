@@ -105,7 +105,7 @@ class DownloadFromFTP {
             'post_content'   => '',
             'post_status'    => 'inherit',
         ), $sideloaded['file'] ); // wp_handle_sideload() will have a file array key, so we use this in case it was filtered
-        unlink( $temp_file ); // Final cleanup
+        // unlink( $temp_file ); Final practice Cleanup
     }
 
 }
