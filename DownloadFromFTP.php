@@ -51,6 +51,11 @@ class DownloadFromFTP {
         if ( ! $connected ) {
             return;
         }
+       wp-content/uploads
+        if(file_exists (plugin_dir_path(__FILE__) . '../../uploads/inventario.csv'))
+    {
+        unlink(plugin_dir_path(__FILE__) . '../../uploads/inventario.csv')
+    }
         $remote_file = "inventario.csv";
         // Yep, you can use paths as well.
         // $remote_file = "some/remote-file.txt";
