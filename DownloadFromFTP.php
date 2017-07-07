@@ -1,8 +1,5 @@
 <?php
-/*
-Plugin Name: Download CSV
-Description: Download a CSV file with the catalog of articles from a ftp server
-*/
+
 /* START */
 
 //Download CSV from FTP to WP
@@ -42,11 +39,12 @@ class DownloadFromFTP {
          * You DO NOT want to hard-code this, these values are here specifically for
          * testing purposes.
          */
+        $option = get_option('dcsv_options');
         $connection_arguments = array(
-            'port' => 21,
-            'hostname' => '66.220.9.50',
-            'username' => 'ivan31',
-            'password' => '123456',
+            'port' => "{$option['port']}",
+            'hostname' => "{$option['host']}",
+            'username' => "{$option['username']}",
+            'password' => "{$option['password']}",
         );
         $connection = new WP_Filesystem_FTPext( $connection_arguments );
         $connected = $connection->connect();
@@ -107,7 +105,7 @@ class DownloadFromFTP {
             'post_content'   => '',
             'post_status'    => 'inherit',
         ), $sideloaded['file'] ); // wp_handle_sideload() will have a file array key, so we use this in case it was filtered
-//        unlink( $temp_file ); // Final cleanup
+        unlink( $temp_file ); // Final cleanup
     }
 
 }
@@ -118,6 +116,7 @@ function DownloadFromFTP() {
 function cron_define() {
     if(!wp_next_scheduled('update_store')) {
         wp_schedule_event(current_time('timestamp'),'hourly','update_store');
+        add_option('my_plugin_do_activation_redirect', true);
     }
 }
 
@@ -125,9 +124,11 @@ function unset_cron() {
     wp_clear_scheduled_hook('update_store');
 }
 
-register_activation_hook( __FILE__, 'cron_define' );
-add_action( 'update_store' , array(DownloadFromFTP(), 'main'));
-register_deactivation_hook( __FILE__, 'unset_cron' );
-
+function my_plugin_redirect() {
+    if (get_option('my_plugin_do_activation_redirect', false)) {
+        delete_option('my_plugin_do_activation_redirect');
+        exit(wp_redirect('tools.php?page=ftp_settings'));
+    }
+}
 /* STOP */
 ?>
