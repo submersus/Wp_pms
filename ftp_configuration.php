@@ -7,7 +7,7 @@ Author: pentagonmediasolutions by: Ivan de Menezes,Alirio Angel.
 */
 
 include('DownloadFromFTP.php');
-
+$options;
 add_action('admin_menu', 'option_menu');
 function option_menu() {
     add_submenu_page(
@@ -28,7 +28,7 @@ function dcsv_options_page_html() {
     ?>
     <div class="wrap">
         <h1><?= esc_html(get_admin_page_title()); ?></h1>
-        <form action="options.php" method="post">
+        <form method="post">
             <?php
             // output security fields for the registered setting "wporg_options"
             settings_fields('dcsv');
@@ -103,5 +103,23 @@ function fields_render($id) {
 register_activation_hook( __FILE__, 'cron_define' );
 add_action('admin_init', 'my_plugin_redirect');
 add_action( 'update_store' , array(DownloadFromFTP(), 'main'));
+
 register_deactivation_hook( __FILE__, 'unset_cron' );
 
+
+if (isset($_POST['submit'])) {
+    global $options;
+    $old_value = get_option('dcsv_options');
+    $option_name = array();
+    $option = array();
+    foreach ($_POST['dcsv_options'] as $name => $val){
+        $option_name[] = $name;
+        $option[] = $val;
+    }
+    $options = array_combine($option_name, $option);
+    update_option('dcsv_options', $options);
+    unset_cron();
+    cron_define();
+}
+
+?>

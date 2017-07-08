@@ -18,9 +18,6 @@ class DownloadFromFTP {
     }
 
     public function main() {
-//        if ( ! isset( $_GET['download'] ) ) {
-//            return;
-//        }
         // First load the necessary classes
         if ( ! function_exists( 'wp_tempnam' ) ) {
             require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -35,18 +32,58 @@ class DownloadFromFTP {
         if ( ! defined( 'FS_CONNECT_TIMEOUT' ) ) {
             define( 'FS_CONNECT_TIMEOUT', 30 );
         }
-        
-        // Check if the file CSV already exist in the file system
-//        $path_temp = "../wp-content/uploads/" . date("Y");
-//        if (is_dir($path_temp) && file_exists($path_temp)) {
-//            $path_temp .= "/" . date("m");
-//            if(is_dir($path_temp) && file_exists($path_temp)) {
-//                $path_temp .= "/inventario.csv";
-//                if(file_exists($path_temp)) {
-//                    unlink($path_temp);
-//                }
-//            }
-//        }
+        // Check if a CSV file already exist
+        $path_temp = "wp-content/uploads/" . date("Y");
+        if (is_dir($path_temp) && file_exists($path_temp)) {
+            $path_temp .= "/" . date("m");
+            if (is_dir($path_temp) && file_exists($path_temp)) {
+                $path_temp .= "/inventario.csv";
+                if (file_exists($path_temp)) {
+                    unlink($path_temp);
+                }
+            } else {
+                $month = intval(date("m")) - 1;
+                $month = $month < 10 ? "0" . $month : $month;
+                $path_temp = "wp-content/uploads/" . date("Y") . "/" . $month;
+                if (is_dir($path_temp) && file_exists($path_temp)) {
+
+                    $path_temp .= "/inventario.csv";
+                    if (file_exists($path_temp)) {
+                        unlink($path_temp);
+                        $month = intval(date("m")) - 1;
+                        $month = $month < 10 ? "0" . $month : $month;
+                        $path_temp = "wp-content/uploads/" . date("Y") . "/" . $month;
+                        rmdir($path_temp);
+                    } else {
+                        $month = intval(date("m")) - 1;
+                        $month = $month < 10 ? "0" . $month : $month;
+                        $path_temp = "wp-content/uploads/" . date("Y") . "/" . $month;
+                        rmdir($path_temp);
+                    }
+                }
+            }
+        }
+        else {
+            $path_temp = "wp-content/uploads/" . date("Y", strtotime("-1 year"));
+            if (is_dir($path_temp) && file_exists($path_temp)) {
+                $path_temp .= "/12";
+                if (is_dir($path_temp) && file_exists($path_temp)) {
+                    $path_temp .= "/inventario.csv";
+                    if (file_exists($path_temp)) {
+                        unlink($path_temp);
+                        rmdir("wp-content/uploads/" . date("Y", strtotime("-1 year")) . "/12");
+                        rmdir("wp-content/uploads/" . date("Y", strtotime("-1 year")));
+                    } else {
+                        rmdir("wp-content/uploads/" . date("Y", strtotime("-1 year")) . "/12");
+                        rmdir("wp-content/uploads/" . date("Y", strtotime("-1 year")));
+                    }
+                } else {
+                    rmdir("wp-content/uploads/" . date("Y", strtotime("-1 year")));
+                }
+            }
+
+        }
+
         /**
          * You DO NOT want to hard-code this, these values are here specifically for
          * testing purposes.
@@ -63,7 +100,7 @@ class DownloadFromFTP {
         if ( ! $connected ) {
             return;
         }
-        
+
         $remote_file = "inventario.csv";
         // Yep, you can use paths as well.
         // $remote_file = "some/remote-file.txt";
@@ -110,14 +147,13 @@ class DownloadFromFTP {
         if ( ! empty( $sideloaded['error'] ) ) {
             return;
         }
-        
+
     }
-    
-    
+
+
 
 }
 function DownloadFromFTP() {
-    check_file_exist();
     return DownloadFromFTP::init();
 }
 
