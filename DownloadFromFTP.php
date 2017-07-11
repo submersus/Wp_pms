@@ -190,19 +190,9 @@ function check_file_exist()
             $month = $month < 10 ? "0" . $month : $month;
             $path_temp = "../wp-content/uploads/" . date("Y") . "/" . $month;
             if (is_dir($path_temp) && file_exists($path_temp)) {
-
                 $path_temp .= "/inventario.csv";
                 if (file_exists($path_temp)) {
                     unlink($path_temp);
-                    $month = intval(date("m")) - 1;
-                    $month = $month < 10 ? "0" . $month : $month;
-                    $path_temp = "../wp-content/uploads/" . date("Y") . "/" . $month;
-                    rmdir($path_temp);
-                } else {
-                    $month = intval(date("m")) - 1;
-                    $month = $month < 10 ? "0" . $month : $month;
-                    $path_temp = "../wp-content/uploads/" . date("Y") . "/" . $month;
-                    rmdir($path_temp);
                 }
             }
         }
@@ -215,15 +205,8 @@ function check_file_exist()
                     $path_temp .= "/inventario.csv";
                     if (file_exists($path_temp)) {
                         unlink($path_temp);
-                        rmdir("../wp-content/uploads/" . date("Y", strtotime("-1 year")) . "/12");
-                        rmdir("../wp-content/uploads/" . date("Y", strtotime("-1 year")));
-                    } else {
-                        rmdir("../wp-content/uploads/" . date("Y", strtotime("-1 year")) . "/12");
-                        rmdir("../wp-content/uploads/" . date("Y", strtotime("-1 year")));
                     }
-                } else {
-                    rmdir("../wp-content/uploads/" . date("Y", strtotime("-1 year")));
-                }
+                } 
             }
 
         }

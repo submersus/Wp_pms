@@ -36,7 +36,7 @@ function dcsv_options_page_html() {
             // (sections are registered for "wporg", each field is registered to a specific section)
             do_settings_sections('dcsv');
             // output save settings button
-            submit_button('Guardar Ajustes');
+            submit_button('Guardar Ajustes', 'primary', 'update_csv_settings');
             ?>
         </form>
     </div>
@@ -107,7 +107,7 @@ add_action( 'update_store' , array(DownloadFromFTP(), 'main'));
 register_deactivation_hook( __FILE__, 'unset_cron' );
 
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['update_csv_settings']) && $_GET['page'] === 'ftp_settings') {
     global $options;
     $old_value = get_option('dcsv_options');
     $option_name = array();
